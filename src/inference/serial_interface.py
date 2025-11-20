@@ -11,15 +11,12 @@ class MessageType(Enum):
 
 
 class SerialInterface:
-    def __init__(self, port: str, baudrate: int, timeout: float):
+    def __init__(self, port: str, baudrate: int, timeout: float, callbacks: dict[MessageType, Callable[[], str]]):
         self.port = port
         self.baudrate = baudrate
         self.timeout = timeout
         self.serial_connection = None
-        self.callbacks: dict[MessageType, list[Callable]] = {}
-
-    def add_callback(self, message_type: MessageType, callback: Callable):
-        self.callbacks[message_type] = self.callbacks.get(message_type, []) + [callback]
+        self.callbacks = callbacks
 
     def listen(self):
         self.__open_connection__()
@@ -34,8 +31,12 @@ class SerialInterface:
 
             parsed = json.loads(line)
             message_type = MessageType(parsed["type"])
-            for callback in self.callbacks.get(message_type, []):
-                callback()
+
+            if message_type in self.callbacks:
+                result = self.callbacks[message_type]()
+                self.__send_line__(result)
+            else:
+                print(f"[WARN] Unknown message type: {message_type}")
 
     def __open_connection__(self):
         self.serial_connection = serial.Serial(port=self.port, baudrate=self.baudrate, timeout=self.timeout)
