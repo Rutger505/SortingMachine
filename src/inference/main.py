@@ -5,7 +5,9 @@ from src.inference.serial_interface import SerialInterface, MessageType
 
 
 def main():
-    color_detector = ColorDetection(f"{os.getcwd()}/../../best.pt")
+    color_detector = ColorDetection(f"{os.getcwd()}/best.pt")
+
+    color_detector.predict(f"{os.getcwd()}/test.jpg")
 
     callbacks = {
         MessageType.REQUEST_COLOR: lambda: color_detector.predict(f"{os.getcwd()}/../../test.jpg"),

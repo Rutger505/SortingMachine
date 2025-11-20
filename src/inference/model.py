@@ -7,6 +7,8 @@ class ColorDetection:
 
     def predict(self, image):
         # TODO make prediction a string of color
-        result = self.model(image)
-        print(result)
+        result = self.model(image)[0]
+        most_probable_color = result.probs.top1
+        most_probable_color_name = result.names[most_probable_color].lower()
+        print(f"Result in model.py: {most_probable_color_name}")
         return result
