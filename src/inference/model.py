@@ -6,4 +6,7 @@ class ColorDetection:
         self.model = YOLO(model_file)
 
     def predict(self, image):
-        return self.model(image)
+        # TODO make prediction a string of color
+        result = self.model(image)
+        print(result)
+        return result
