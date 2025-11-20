@@ -1,13 +1,25 @@
-# TODO inference logic
 import os
 
 from src.inference.model import ColorDetection
+from src.inference.serial_interface import SerialInterface, MessageType
 
 
 def main():
     color_detector = ColorDetection(f"{os.getcwd()}/../../best.pt")
 
-    print(color_detector.predict(f"{os.getcwd()}/../../test.jpg"))
+    callbacks = {
+        MessageType.REQUEST_COLOR: lambda: color_detector.predict(f"{os.getcwd()}/../../test.jpg"),
+        MessageType.PING: lambda: "pong"
+    }
+
+    serial_interface = SerialInterface(
+        port="/dev/ttyUSB0",  # Adjust port as needed
+        baudrate=9600,
+        timeout=1.0,
+        callbacks=callbacks
+    )
+
+    serial_interface.listen()
 
 
 if __name__ == '__main__':
