@@ -1,9 +1,10 @@
+# The training of the model was originally executed in Google Colab. Hence the `userdata.get`
+
 import os
+
 from google.colab import userdata
 from roboflow import Roboflow
-import ultralytics
 from ultralytics import YOLO
-import cv2
 
 # Download dataset from Roboflow
 ROBOFLOW_API_KEY = userdata.get('ROBOFLOW_API_KEY')
@@ -17,7 +18,6 @@ project = roboflow.workspace("sortingmachine").project(
 version = project.version(1)
 dataset = version.download("folder")
 
-# TODO improve
 # Train classification model
 model = YOLO("yolov8n-cls.pt")
 
